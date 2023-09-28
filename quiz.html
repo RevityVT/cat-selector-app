@@ -174,10 +174,7 @@ function showTab(n) {
     document.getElementById("nextBtn").innerHTML = "Next";
   }
   //... and run a function that will display the correct step indicator:
-  if (n == 0) {
-  	removeStepIndicator();
-  }
-  else {
+  if (n != 0) {
     document.getElementById("stepCircles").style.display = "block";
     fixStepIndicator(n);
   }
