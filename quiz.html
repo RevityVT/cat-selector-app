@@ -225,7 +225,7 @@ function validateForm() {
 function fixStepIndicator(n) {
   // This function removes the "active" class of all steps...
   var i, x = document.getElementsByClassName("step");
-  document.getElementByClassName("stepCircles").style.display = "block";
+  document.getElementById("stepCircles").style.display = "block";
   for (i = 0; i < x.length; i++) {
   	x[i].style.display = "block";
   }
