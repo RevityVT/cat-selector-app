@@ -230,7 +230,7 @@ function fixStepIndicator(n) {
   var i, x = document.getElementsByClassName("step");
   document.getElementById("stepCircles").style.display = "block";
   for (i = 0; i < x.length; i++) {
-  	x[i].style.inline-display = "inline-block";
+  	x[i].style.display = "inline-block";
   }
   //... and adds the "active" class on the current step:
   x[n - 1].className += " active";
