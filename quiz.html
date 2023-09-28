@@ -79,7 +79,7 @@ button:hover {
 
 <form id="quizForm" action="">
 
-<button class="tab" id="startBtn" onclick="nextPrev(1)">Start!</button>
+<button type="button" class="tab" id="startBtn" onclick="showTab(1)">Start!</button>
 
 <div class="tab">How active do you want your cat to be?
   <p><input type="radio" name="energy-level" value="Low">I'd like a calm cat</p>
@@ -159,9 +159,11 @@ function showTab(n) {
   //... and fix the Previous/Next buttons:
   if (n == 0) {
     document.getElementById("nextBtn").style.display = "none";
+    document.getElementById("startBtn").style.display = "inline";
   }
   else {
     document.getElementById("nextBtn").style.display = "inline";
+    document.getElementById("startBtn").style.display = "none";
   }
   if (n <= 1) {
     document.getElementById("prevBtn").style.display = "none";
