@@ -1,127 +1,83 @@
 <!DOCTYPE html>
-<html>
-<style>
-* {
-  box-sizing: border-box;
-}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <!-- favicon -->
+  <link rel="shortcut icon" href="./assets/icons8-cat-96.png" type="image/x-icon">
+  <!-- google fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+  <!-- styles -->
+  <link rel="stylesheet" href="style.css">
+  <title>Cat Selector App | Cat Quiz</title>
+</head>
 
-body {
-  background-color: #f1f1f1;
-}
-
-#quizForm {
-  position: relative;
-  background-color: #ffffff;
-  margin: 100px auto;
-  font-family: Raleway;
-  padding: 40px;
-  width: 70%;
-  min-width: 300px;
-  min-height: 400px;
-}
-
-h1 {
-  text-align: center;  
-}
-
-/* Hide all steps by default: */
-.tab {
-  display: none;
-}
-
-button {
-  background-color: #6caeed;
-  color: #ffffff;
-  border: none;
-  padding: 10px 20px;
-  font-size: 17px;
-  font-family: Raleway;
-  cursor: pointer;
-}
-
-button:hover {
-  opacity: 0.8;
-}
-
-#stepCircles {
-  display: block;
-  text-align: center;
-  margin-top: 40px;
-  display: none;
-  position: absolute;
-  bottom: 40px;
-  width: 88%;
-}
-
-/* Make circles that indicate the steps of the form: */
-.step {
-  height: 15px;
-  width: 15px;
-  margin: 0 2px;
-  background-color: #bbbbbb;
-  border: none;  
-  border-radius: 50%;
-  display: inline-block;
-  opacity: 0.5;
-}
-
-.step.active {
-  opacity: 1;
-}
-
-/* Mark the steps that are finished and valid: */
-.step.finish {
-  background-color: #89cff0;
-}
-</style>
 <body>
 
 <div>
 
-<form id="quizForm" action="">
+<form id="quizForm" action="/results.html">
 
-<button type="button" class="tab" id="startBtn" onclick="showTab(1)">Start!</button>
+<div class="tab">
+  <h1>Find the Perfect Cat Breed!</h1>
+  <p>Just answer the following 8 questions, and you'll get a selection of several cat breeds that would fit your lifestyle the best!</p>
+  <p>Note that although cat breeds tend to have certain traits, every individual cat is unique (and we love all cats a lot). 
+    Also, it is very encouraged to adopt a cat if possible for your lifestyle; you could get a wonderful friend and save a life!</p>
+  <button type="button" id="startBtn" onclick="nextPrev(1)">Start!</button>
+</div>
+
 
 <div class="tab">How active do you want your cat to be?
+  <hr>
   <p><input type="radio" name="energy-level" value="Low">I'd like a calm cat</p>
   <p><input type="radio" name="energy-level" value="Mid">I'd like a playful, friendly cat</p>
   <p><input type="radio" name="energy-level" value="High">I'd like a highly active cat</p>
 </div>
 
 <div class="tab">How affectionate do you want your cat to be?
+  <hr>
   <p><input type="radio" name="affection" value="Low">I'd like a more independent cat</p>
   <p><input type="radio" name="affection" value="High">The cuddlier and more affectionate, the better!</p>
 </div>
 
 <div class="tab">How sociable do you want your cat to be?
+  <hr>
   <p><input type="radio" name="social-needs" value="Low">Friendly but independent</p>
   <p><input type="radio" name="social-needs" value="High">Sociable and reliant</p>
 </div>
 
 <div class="tab">How talkative would you like your cat to be?
+  <hr>
   <p><input type="radio" name="talkative" value="Low">Usually quiet</p>
   <p><input type="radio" name="talkative" value="Mid">Slight or occasionally talkative</p>
   <p><input type="radio" name="talkative" value="High">Very talkative</p>
 </div>
 
 <div class="tab">How often can you groom your cat?
+  <hr>
   <p><input type="radio" name="groom-needs" value="Low">Once a week or less</p>
   <p><input type="radio" name="groom-needs" value="Mid">A few times a week</p>
   <p><input type="radio" name="groom-needs" value="High">Every day, or almost every day</p>
 </div>
 
 <div class="tab">Would you prefer a cat that sheds less?
+  <hr>
   <p><input type="radio" name="shedding" value="Low">As little shedding as possible</p>
   <p><input type="radio" name="shedding" value="High">I'm alright with some shedding</p>
   <p><input type="radio" name="shedding" value="Either">I don't mind either way!</p>
 </div>
 
 <div class="tab">Do you have any kids in your home?
+  <hr>
   <p><input type="radio" name="kids" value="High">Yes (or I plan to in the future)</p>
   <p><input type="radio" name="kids" value="Either">No</p>
 </div>
 
 <div class="tab">Do you have any dogs in your home?
+  <hr>
   <p><input type="radio" name="dogs" value="High">Yes (or I plan to in the future)</p>
   <p><input type="radio" name="dogs" value="Either">No</p>
 </div>
@@ -156,7 +112,7 @@ showTab(currentTab); // Display the current tab
 function showTab(n) {
   // This function will display the specified tab of the form...
   var x = document.getElementsByClassName("tab");
-  x[n].style.display = "block";
+  x[n].style.display = "flex";
   //... and fix the Previous/Next buttons:
   if (n == 0) {
     document.getElementById("nextBtn").style.display = "none";
@@ -195,7 +151,7 @@ function nextPrev(n) {
   // if you have reached the end of the form...
   if (currentTab >= x.length) {
     // ... the form gets submitted:
-    document.getElementById("regForm").submit();
+    document.getElementById("quizForm").submit();
     return false;
   }
   // Otherwise, display the correct tab:
