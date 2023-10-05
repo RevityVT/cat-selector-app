@@ -11,13 +11,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
   <!-- styles -->
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" type="text/css" href="style.css">
   <title>Cat Selector App | Cat Quiz</title>
 </head>
 
 <body>
 
-<div>
 
 <form id="quizForm" action="/results.php" method="post">
 
@@ -29,7 +28,7 @@
   <button type="button" id="startBtn" onclick="nextPrev(1)">Start!</button>
 </div>
 
-
+<!-- each question on a different page; script hides all questions except for the current one -->
 <div class="tab">How active do you want your cat to be?
   <hr>
   <p><input type="radio" name="energy-level" value="Low">I'd like a calm cat</p>
@@ -82,12 +81,10 @@
   <p><input type="radio" name="dogs" value="Either">No</p>
 </div>
 
-<div style="overflow:auto;">
-  <div style="float:right;">
-    <button type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
-    <button type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
-    <button type="submit" id="submitBtn">Submit</button>
-  </div>
+<div>
+  <button type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
+  <button type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
+  <button type="submit" id="submitBtn">Submit</button>
 </div>
 
 <!-- Circles which indicates the steps of the form: -->
@@ -104,37 +101,36 @@
 
 </form>
 
-</div>
-
 <script>
 var currentTab = 0; // Current tab is set to be the first tab (0)
 showTab(currentTab); // Display the current tab
 
-function showTab(n) {
-  // This function will display the specified tab of the form...
+async function showTab(n) {
+  // Displays nth tab of the quiz
   var x = document.getElementsByClassName("tab");
+  // Make nth tab visible; all other tabs are set to display: none
   x[n].style.display = "flex";
-  //... and fix the Previous/Next buttons:
-  if (n == 0) {
+  // Fix prev/next/start/submit buttons
+  if (n == 0) { // Start of quiz: only show start button
     document.getElementById("nextBtn").style.display = "none";
     document.getElementById("startBtn").style.display = "inline";
   }
-  else {
+  else { // Otherwise, hide start button
     document.getElementById("nextBtn").style.display = "inline";
     document.getElementById("startBtn").style.display = "none";
   }
-  if (n <= 1) {
+  if (n <= 1) { // First question; hide prev button
     document.getElementById("prevBtn").style.display = "none";
   } else {
     document.getElementById("prevBtn").style.display = "inline";
   }
-  if (n == (x.length - 1)) {
+  if (n == (x.length - 1)) { // Last question; change next to submit
     document.getElementById("submitBtn").style.display = "inline";
     document.getElementById("nextBtn").style.display = "none";
   } else {
     document.getElementById("submitBtn").style.display = "none";
   }
-  // and run a function that will display the correct step indicator:
+  // Display the correct step indicator:
   if (n != 0) {
     document.getElementById("stepCircles").style.display = "block";
     fixStepIndicator(n);
@@ -142,18 +138,16 @@ function showTab(n) {
 }
 
 function nextPrev(n) {
-  // This function will figure out which tab to display
+  // Figure out which tab to display
   var x = document.getElementsByClassName("tab");
-  // Exit the function if any field in the current tab is invalid:
-  if (currentTab != 0 && n == 1 && !validateForm()) return false;
+  // Exit the function if current question is unanswered
+  if (currentTab != 0 && !validateForm() && n == 1) return false;
   // Hide the current tab:
   x[currentTab].style.display = "none";
   // Increase or decrease the current tab by 1:
   currentTab = currentTab + n;
-  // if you have reached the end of the form...
+  // If at end of form, submit quiz
   if (currentTab >= x.length) {
-    // ... the form gets submitted:
-  //  document.getElementById("quizForm").submit();
     return false;
   }
   // Otherwise, display the correct tab:
@@ -161,7 +155,7 @@ function nextPrev(n) {
 }
 
 function validateForm() {
-  // This function deals with validation of the form fields
+  // Validates form fields
   if (currentTab == 0) {
     return true;
   }
@@ -193,6 +187,8 @@ function fixStepIndicator(n) {
   //... and adds the "active" class on the current step:
   x[n - 1].className += " active";
 }
+
+
 
 </script>
 

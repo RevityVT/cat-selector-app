@@ -32,8 +32,75 @@
         <?php $kids = $_POST['kids']; ?>
         <?php $dogs = $_POST['dogs']; ?>
 
-    <p>Testing cat breed: This should show a Bengal.</p>
-    <p>The name of the breed is: </p><span id="catBreed"></span>
+        <p>Based on your answers, we think the <span id="catBreed"></span> would be a great fit for your lifestyle!</p>
+        <img id="catImage" src="/assets/placeholder.png"></img>
+    
+        <h2 id="catName"></h2>
+        <p id="catAbout"></p>
+
+        <div class="traits" id="catAffection">Affection Level
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+        </div>
+
+        <div class="traits" id="catKids">Child Friendly
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+        </div>
+
+        <div class="traits" id="catDogs">Dog Friendly
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+        </div>
+
+        <div class="traits" id="catEnergy">Energy Level
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+        </div>
+
+        <div class="traits" id="catGroom">Grooming Needs
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+        </div>
+
+        <div class="traits" id="catShedding">Shedding Level
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+        </div>
+
+        <div class="traits" id="catSocial">Social Needs
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+        </div>
+
+        <div class="traits" id="catTalkative">Vocalisation
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+        </div>
 
     </main>
 
@@ -44,11 +111,12 @@
 // in calcAnswer
 var quizAnswers = [];
 var breeds = [];
-var selected_breed = {};
+var selected_breed;
 const url = 'https://api.thecatapi.com/v1/breeds';
 const api_key = 'live_lUlnGGWyLHZwKDRycoHwC6BnE1cInxjgXNPHpKO9JjwiTA32jf7tcOd0qOyNEE93';
 var catScores = new Array(67).fill(0);
 var json = [];
+var targetArr = [];
 
 quizAnswers.push("<?php echo"$energy"?>");
 quizAnswers.push("<?php echo"$affection"?>");
@@ -59,13 +127,14 @@ quizAnswers.push("<?php echo"$shedding"?>");
 quizAnswers.push("<?php echo"$kids"?>");
 quizAnswers.push("<?php echo"$dogs"?>");
 
-showBengal();
 calcQuiz();
 
 async function calcQuiz() {
-
+    
     const response = await fetch(url);
     json = await response.json();
+    
+    console.log("Calculating scores");
 
     // Iterate through every trait and add points to cats
     // that fit the traits
@@ -77,7 +146,7 @@ async function calcQuiz() {
             continue;
         }
 
-        var targetArr = [];
+        targetArr = [];
         if (quizAnswers[i] == "Low") {
             targetArr = [1, 2];
         }
@@ -97,13 +166,13 @@ async function calcQuiz() {
         // Iterate through all cat breeds and see which ones have matching traits
         for (j = 0; j < json.length; j++)
         {
-            if (matchesLevel(i, j, targetArr))
+            if (matchesLevel(i, j))
             {
                 catScores[j]++;
             }
         }
     }
-
+    
     var bestIndex = 0;
     for (i = 0; i < catScores.length; i++)
     {
@@ -111,15 +180,24 @@ async function calcQuiz() {
             bestIndex = i;
         }
     }
-
-    selected_breed = bestIndex;
+    
     this.selected_breed = json[bestIndex];
     document.getElementById("catBreed").innerHTML = this.selected_breed.name;
-
+    if (this.selected_breed.reference_image_id)
+    {
+        const responseImage = await fetch("https://api.thecatapi.com/v1/images/" + this.selected_breed.reference_image_id);
+        const jsonImage = await responseImage.json();
+        document.getElementById("catImage").src = jsonImage.url;
+    }
     
+    document.getElementById("catName").innerHTML = this.selected_breed.name;
+    document.getElementById("catAbout").innerHTML = this.selected_breed.description;
+    
+    showTraits();
+
 }
 
-function matchesLevel(i, j, target) {
+function matchesLevel(i, j) {
     var trait;
     switch(i) {
         case 0:
@@ -152,7 +230,7 @@ function matchesLevel(i, j, target) {
     }
     
 
-    if (target.includes(trait)) {
+    if (this.targetArr.includes(trait)) {
         return true;
     }
     else {
@@ -161,71 +239,55 @@ function matchesLevel(i, j, target) {
     
 }
 
-// Given n (position of a trait in quizAnswers)
-// return the trait quizAnswers[n] corresponds to
-// and the ideal number(s) the person wants for the trait
-function bestLevel(n) {
-    var trait;
-    var target = [];
-    if (quizAnswers[n] == "Low")
-    {
-        target.push(1);
-        target.push(2);
-    }
-    else if (quizAnswers[n] == "Mid")
-    {
-        target.push(3);
-    }
-    else
-    {
-        target.push(4);
-        target.push(5);
-    }
-    switch(n) {
-        case 0:
-            trait = "energy_level";
-            break;
-        case 1:
-            trait = "affection_level";
-            if (quizAnswers[n] == "Mid" || quizAnswers[n] == "Low")
-            {
-                target = [];
-                target.push(3);
-            }
-            break;
-        case 2:
-            trait = "social_needs";
-            if (quizAnswers[n] == "Low")
-            {
-                target = [];
-                target.push(3);
-            }
-            break;
-        case 3:
-            trait = "vocalisation";
-            break;
-        case 4:
-            trait = "grooming";
-            break;
-        case 5:
-            trait = "shedding_level";
-            break;
-        case 6:
-            trait = "child_friendly";
-            break;
-        case 7:
-            trait = "dog_friendly";
-            break;
-        default:
-            trait = "dog_friendly";
-    }
+function showTraits() {
+    var trait, score;
+    trait = "catAffection";
+    score = this.selected_breed.affection_level;
+    scoreTrait(trait, score);
+    
+    trait = "catKids";
+    score = this.selected_breed.child_friendly;
+    scoreTrait(trait, score);
+    
+    trait = "catDogs";
+    score = this.selected_breed.dog_friendly;
+    scoreTrait(trait, score);
+    
+    trait = "catEnergy";
+    score = this.selected_breed.energy_level;
+    scoreTrait(trait, score);
+    
+    trait = "catGroom";
+    score = this.selected_breed.grooming;
+    scoreTrait(trait, score);
+    
+    trait = "catShedding";
+    score = this.selected_breed.shedding_level;
+    scoreTrait(trait, score);
+    
+    trait = "catSocial";
+    score = this.selected_breed.social_needs;
+    scoreTrait(trait, score);
+    
+    trait = "catTalkative";
+    score = this.selected_breed.vocalisation;
+    scoreTrait(trait, score);
+    
+}
 
-    return [trait, target];
+// 1 <= n <= 5
+// Fills in n stars out of 5 for trait
+function scoreTrait(trait, n) {
+  var i, x = document.getElementById(trait).childNodes;
+  for (i = 1; i < 2*n; i += 2) {
+  	x[i].className = "fa fa-star";
+  }
 }
 
 async function showBengal() {
     const response = await fetch(url);
-    json = await response.json().parse();
+    json = await response.json();
+
     this.selected_breed = json[10];
     document.getElementById("catBreed").innerHTML = this.selected_breed.name;
 }
